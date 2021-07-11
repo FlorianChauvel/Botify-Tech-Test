@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React from 'react';
 import { parse } from 'papaparse';
 
 import NearEarthObject from '../../types/NearEarthObject';
@@ -25,29 +25,40 @@ type Props = {
     renderFilter?: (props: RenderFilterProps) => void;
     renderCsvReader?: (props: RenderCsvReaderProps) => void;
 };
+type State = {
+    nearEarthObjects: NearEarthObject[];
+    filter: Option | null;
+    loading: boolean;
+    error: Error | null;
+};
 
-const NearEarthObjectsContainer: React.FC<Props> = ({ render, renderFilter, renderCsvReader }) => {
-    const [nearEarthObjects, setNearEarthObjects] = useState<NearEarthObject[]>([]);
-    const [filter, setFilter] = useState<Option | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
+class NearEarthObjectsContainer extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            nearEarthObjects: [],
+            filter: null,
+            loading: false,
+            error: null,
+        };
+    }
 
-    useEffect(() => {
+    componentDidMount() {
         const fetchData = async () => {
-            setLoading(true);
+            this.setState({ loading: true });
             try {
                 const data = await API.fetchNearEarthObjects();
-                setNearEarthObjects(data);
+                this.setState({ nearEarthObjects: data });
             } catch (error) {
-                setError(error);
+                this.setState({ error });
             } finally {
-                setLoading(false);
+                this.setState({ loading: false });
             }
         };
         fetchData();
-    }, []);
+    }
 
-    const onRead: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    onRead: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         const file = event.target.files?.[0];
         if (!file) {
             return;
@@ -56,22 +67,30 @@ const NearEarthObjectsContainer: React.FC<Props> = ({ render, renderFilter, rend
         parse(file, {
             complete: ({ data }) => {
                 const mappedData = mapCsvDataToNEOs(data as string[][]);
-                setNearEarthObjects(mappedData);
-                setFilter(null); // we have to empty the filter as the data from csv does not provide orbit info
-            }
+                this.setState({ nearEarthObjects: mappedData });
+                this.setState({ filter: null });
+            } 
         });
     };
 
-    const filteredObjects = useMemo(() => getFilteredObjects(nearEarthObjects, filter), [nearEarthObjects, filter]);
-    const filterOptions = useMemo(() => getFilterOptions(nearEarthObjects), [nearEarthObjects]);
+    setFilter = (filter: Option | null) => this.setState({ filter });
 
-    return (
-        <>
-            {renderCsvReader && renderCsvReader({ onRead })}
-            {renderFilter && renderFilter({ filter, filterOptions, setFilter })}
-            {render({ nearEarthObjects: filteredObjects, loading, error })}
-        </>
-    );
-};
+    render = () => {
+        const { onRead, setFilter, state, props } = this;
+        const { nearEarthObjects, filter, loading, error } = state;
+        const { render, renderCsvReader, renderFilter } = props;
+
+        const filteredObjects = getFilteredObjects(nearEarthObjects, filter);
+        const filterOptions = getFilterOptions(nearEarthObjects);
+
+        return (
+            <>
+                {renderCsvReader && renderCsvReader({ onRead })}
+                {renderFilter && renderFilter({ filter, filterOptions, setFilter })}
+                {render({ nearEarthObjects: filteredObjects, loading, error })}
+            </>
+        );
+    }
+}
 
 export default NearEarthObjectsContainer;
