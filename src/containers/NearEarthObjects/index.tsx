@@ -57,7 +57,8 @@ const NearEarthObjectsContainer: React.FC<Props> = ({ render, renderFilter, rend
             complete: ({ data }) => {
                 const mappedData = mapCsvDataToNEOs(data as string[][]);
                 setNearEarthObjects(mappedData);
-            } 
+                setFilter(null); // we have to empty the filter as the data from csv does not provide orbit info
+            }
         });
     };
 
