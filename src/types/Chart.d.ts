@@ -1,4 +1,4 @@
-export type BarChartData = Array<Array<string | number>>;
+export type ChartData = Array<Array<string | number>>;
 
 type TextStyleOptions = {
     bold: boolean;
@@ -21,4 +21,10 @@ export type BarChartOptions = {
     };
     hAxis: AxisOptions;
     vAxis: AxisOptions;
+};
+
+export type TableChartOptions = {
+    showRowNumber: boolean;
+    width: string;
+    height: string;
 };

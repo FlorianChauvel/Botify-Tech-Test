@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import Select from 'react-select';
 import NearEarthObject from '../../types/NearEarthObject';
 import { Option } from '../../types/Select';
 import API from './api';
