@@ -1,17 +1,9 @@
 import React from 'react';
+import Select from 'react-select';
 import BarChart from '../components/BarChart';
 import NearEarthObjectsContainer from '../containers/NearEarthObjects';
-import { BarChartData, BarChartOptions } from '../types/BarChart';
-import NearEarthObject from '../types/NearEarthObject';
-
-const getAverageDistance = (neo: NearEarthObject) => (neo.estimated_diameter.kilometers.estimated_diameter_min + neo.estimated_diameter.kilometers.estimated_diameter_max) / 2;
-const mapNearEarthObjectsToBarChartData = (neos: NearEarthObject[]): BarChartData => [
-    ['Neo Name', 'Min Estimated Diameter (km)', 'Max Estimated Diameter (km)'],
-    ...neos
-        .slice() // slice to create a shallow copy before performing a mutating operation: sort
-        .sort((a, b) => getAverageDistance(a) < getAverageDistance(b) ? 1 : -1)
-        .map(neo => [neo.name, neo.estimated_diameter.kilometers.estimated_diameter_min, neo.estimated_diameter.kilometers.estimated_diameter_max])
-];
+import { BarChartOptions } from '../types/BarChart';
+import { mapNearEarthObjectsToBarChartData } from './utils';
 
 const options: BarChartOptions = {
     title: 'NEOs travelling around the Earth',
@@ -46,17 +38,22 @@ const options: BarChartOptions = {
 
 const NEOChart = () => {
     return (
-        <NearEarthObjectsContainer
-            render={({ nearEarthObjects, loading, error }) => {
-                if (loading) {
-                    return <p>loading data...</p>
-                }
-                if (error) {
-                    return <p>Error: {error.message}</p>
-                }
-                return <BarChart data={mapNearEarthObjectsToBarChartData(nearEarthObjects)} options={options} />
-            }}
-        />
+        <>
+			<NearEarthObjectsContainer
+				renderFilter={({ filter, setFilter, filterOptions }) => (
+					<Select value={filter} options={filterOptions} onChange={setFilter} isClearable placeholder="Filter by orbiting" />
+				)}
+				render={({ nearEarthObjects, loading, error }) => {
+					if (loading) {
+						return <p>loading data...</p>
+					}
+					if (error) {
+						return <p>Error: {error.message}</p>
+					}
+					return <BarChart data={mapNearEarthObjectsToBarChartData(nearEarthObjects)} options={options} />
+				}}
+			/>
+		</>
     );
 };
 
