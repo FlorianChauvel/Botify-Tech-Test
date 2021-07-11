@@ -88,7 +88,6 @@ class NearEarthObjectsContainer extends React.Component<Props, State> {
             </>
         );
     }
-
 }
 
 export default NearEarthObjectsContainer;
