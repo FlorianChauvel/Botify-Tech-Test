@@ -75,15 +75,17 @@ class NearEarthObjectsContainer extends React.Component<Props, State> {
     setFilter = (filter: Option | null) => this.setState({ filter });
 
     render = () => {
-        const { nearEarthObjects, filter, loading, error } = this.state;
-        const { render, renderCsvReader, renderFilter } = this.props;
+        const { onRead, setFilter, state, props } = this;
+        const { nearEarthObjects, filter, loading, error } = state;
+        const { render, renderCsvReader, renderFilter } = props;
+
         const filteredObjects = getFilteredObjects(nearEarthObjects, filter);
         const filterOptions = getFilterOptions(nearEarthObjects);
 
         return (
             <>
-                {renderCsvReader && renderCsvReader({ onRead: this.onRead })}
-                {renderFilter && renderFilter({ filter, filterOptions, setFilter: this.setFilter })}
+                {renderCsvReader && renderCsvReader({ onRead })}
+                {renderFilter && renderFilter({ filter, filterOptions, setFilter })}
                 {render({ nearEarthObjects: filteredObjects, loading, error })}
             </>
         );

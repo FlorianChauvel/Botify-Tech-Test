@@ -66,9 +66,11 @@ class NEOChart extends React.Component<{}, State> {
 
 	render = () => {
 		const { displayMode } = this.state;
+		const { setDisplayMode } = this;
+
 		return (
 			<>
-				<Select value={displayMode} onChange={this.setDisplayMode} options={displayModes} placeholder="Select display mode" />
+				<Select value={displayMode} onChange={setDisplayMode} options={displayModes} placeholder="Select display mode" />
 				<NearEarthObjectsContainer
 					renderCsvReader={({ onRead }) => <input type="file" onChange={onRead} placeholder="read csv" accept=".csv" />}
 					renderFilter={({ filter, setFilter, filterOptions }) => (
