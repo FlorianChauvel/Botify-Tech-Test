@@ -1,11 +1,11 @@
-import NearEarthObject from "../../types/NearEarthObject";
+import NearEarthObject from '../../types/NearEarthObject';
 
 type FetchNearEarthObjectsResponse = {
     near_earth_objects: NearEarthObject[];
 };
 
 const fetchNearEarthObjects = async (): Promise<NearEarthObject[]> => {
-    const url = 'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=DEMO_KEY&size=10';
+    const url = 'https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=SohfFlEBbQJlmBzrGabnMvzNCtCNlG7nVERrXCQ1&size=20';
     const response = await fetch(url);
     if (response.status !== 200) {
         throw Error('Something went wrong while fetching data');
