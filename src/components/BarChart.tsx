@@ -14,7 +14,7 @@ const BarChart: React.FC<Props> = ({ data, options }) => {
     useEffect(() => {
         google.charts.load('current', {packages: ['corechart', 'bar']});
         google.charts.setOnLoadCallback(() => setIsReadyToDraw(true));
-    });
+    }, []);
 
     useEffect(() => {
         if (!isReadyToDraw) {
