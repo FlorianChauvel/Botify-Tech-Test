@@ -48,32 +48,48 @@ const displayModes: Option[] = [
 	{ label: 'Table', value: 'Table' },
 ];
 
-const NEOChart = () => {
-	const [displayMode, setDisplayMode] = useState<Option | null>(displayModes[0]);
-
-	return (
-		<>
-			<Select value={displayMode} onChange={setDisplayMode} options={displayModes} placeholder="Select display mode" />
-			<NearEarthObjectsContainer
-				renderCsvReader={({ onRead }) => <input type="file" onChange={onRead} placeholder="read csv" accept=".csv" />}
-				renderFilter={({ filter, setFilter, filterOptions }) => (
-					<Select value={filter} options={filterOptions} onChange={setFilter} isClearable placeholder="Filter by orbiting" />
-				)}
-				render={({ nearEarthObjects, loading, error }) => {
-					if (loading) {
-						return <p>loading data...</p>
-					}
-					if (error) {
-						return <p>Error: {error.message}</p>
-					}
-					const data = mapNearEarthObjectsToBarChartData(nearEarthObjects);
-					return (displayMode?.value === 'Bars')
-						? <BarChart data={data} options={barOptions} />
-						: <TableChart data={data} options={tableOptions} />
-			}}
-		/>
-		</>
-	);
+type State = {
+	displayMode: Option | null;
 };
+
+class NEOChart extends React.Component<{}, State> {
+	constructor(props: {}) {
+		super(props);
+		this.state = {
+			displayMode: displayModes[0],
+		}
+	}
+
+	setDisplayMode = (displayMode: Option | null) => {
+		this.setState({ displayMode });
+	}
+
+	render = () => {
+		const { displayMode } = this.state;
+		return (
+			<>
+				<Select value={displayMode} onChange={this.setDisplayMode} options={displayModes} placeholder="Select display mode" />
+				<NearEarthObjectsContainer
+					renderCsvReader={({ onRead }) => <input type="file" onChange={onRead} placeholder="read csv" accept=".csv" />}
+					renderFilter={({ filter, setFilter, filterOptions }) => (
+						<Select value={filter} options={filterOptions} onChange={setFilter} isClearable placeholder="Filter by orbiting" />
+					)}
+					render={({ nearEarthObjects, loading, error }) => {
+						if (loading) {
+							return <p>loading data...</p>
+						}
+						if (error) {
+							return <p>Error: {error.message}</p>
+						}
+						const data = mapNearEarthObjectsToBarChartData(nearEarthObjects);
+						return (displayMode?.value === 'Bars')
+							? <BarChart data={data} options={barOptions} />
+							: <TableChart data={data} options={tableOptions} />
+					}}
+				/>
+			</>
+		)
+	}
+}
 
 export default NEOChart;
