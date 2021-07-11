@@ -64,7 +64,6 @@ const NearEarthObjectsContainer: React.FC<Props> = ({ render, renderFilter, rend
     const filteredObjects = useMemo(() => getFilteredObjects(nearEarthObjects, filter), [nearEarthObjects, filter]);
     const filterOptions = useMemo(() => getFilterOptions(nearEarthObjects), [nearEarthObjects]);
 
-    console.log({ filteredObjects });
     return (
         <>
             {renderCsvReader && renderCsvReader({ onRead })}
