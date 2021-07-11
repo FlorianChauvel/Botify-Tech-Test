@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React from 'react';
 import { parse } from 'papaparse';
 
 import NearEarthObject from '../../types/NearEarthObject';
