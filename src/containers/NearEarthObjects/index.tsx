@@ -68,6 +68,7 @@ class NearEarthObjectsContainer extends React.Component<Props, State> {
             complete: ({ data }) => {
                 const mappedData = mapCsvDataToNEOs(data as string[][]);
                 this.setState({ nearEarthObjects: mappedData });
+                this.setState({ filter: null });
             } 
         });
     };
