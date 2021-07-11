@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import BarChart from '../components/BarChart';
+import TableChart from '../components/TableChart';
 import NearEarthObjectsContainer from '../containers/NearEarthObjects';
-import { BarChartOptions } from '../types/BarChart';
+import { BarChartOptions, TableChartOptions } from '../types/Chart';
+import { Option } from '../types/Select';
 import { mapNearEarthObjectsToBarChartData } from './utils';
 
-const options: BarChartOptions = {
+const barOptions: BarChartOptions = {
     title: 'NEOs travelling around the Earth',
     hAxis: {
       title: 'Estimated Diameter (km)',
@@ -36,9 +38,23 @@ const options: BarChartOptions = {
     },
 };
 
+const tableOptions: TableChartOptions = {
+	showRowNumber: true,
+	width: '100%',
+	height: '100%',
+};
+
+const displayModes: Option[] = [
+	{ label: 'Bars', value: 'Bars' },
+	{ label: 'Table', value: 'Table' },
+];
+
 const NEOChart = () => {
-    return (
-        <>
+	const [displayMode, setDisplayMode] = useState<Option | null>(displayModes[0]);
+
+	return (
+		<>
+			<Select value={displayMode} onChange={setDisplayMode} options={displayModes} placeholder="Select display mode" />
 			<NearEarthObjectsContainer
 				renderFilter={({ filter, setFilter, filterOptions }) => (
 					<Select value={filter} options={filterOptions} onChange={setFilter} isClearable placeholder="Filter by orbiting" />
@@ -50,11 +66,14 @@ const NEOChart = () => {
 					if (error) {
 						return <p>Error: {error.message}</p>
 					}
-					return <BarChart data={mapNearEarthObjectsToBarChartData(nearEarthObjects)} options={options} />
-				}}
-			/>
+					const data = mapNearEarthObjectsToBarChartData(nearEarthObjects);
+					return (displayMode?.value === 'Bars')
+						? <BarChart data={data} options={barOptions} />
+						: <TableChart data={data} options={tableOptions} />
+			}}
+		/>
 		</>
-    );
+	);
 };
 
 export default NEOChart;

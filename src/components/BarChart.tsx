@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { BarChartData, BarChartOptions } from '../types/BarChart';
+import { ChartData, BarChartOptions } from '../types/Chart';
 
 type Props = {
-    data: BarChartData;
+    data: ChartData;
     options: BarChartOptions;
 };
 
@@ -26,7 +26,7 @@ const BarChart: React.FC<Props> = ({ data, options }) => {
     return <ChartDiv id="bar-chart" />
 };
 
-const drawChart = (data: any, options: any) => {
+const drawChart = (data: ChartData, options: BarChartOptions) => {
     const formattedData = google.visualization.arrayToDataTable(data);
     const chart = new google.visualization.BarChart(document.getElementById('bar-chart'));
     chart.draw(formattedData, options);
