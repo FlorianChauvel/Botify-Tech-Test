@@ -10,12 +10,18 @@ type RenderProps = {
     loading: boolean;
     error: Error | null;
 };
+type RenderFilterProps = {
+    filter: Option | null;
+    filterOptions: Option[];
+    setFilter: (f: Option | null) => void;
+};
 
 type Props = {
     render: (props: RenderProps) => void;
+    renderFilter?: (props: RenderFilterProps) => void;
 };
 
-const NearEarthObjectsContainer: React.FC<Props> = ({ render }) => {
+const NearEarthObjectsContainer: React.FC<Props> = ({ render, renderFilter }) => {
     const [nearEarthObjects, setNearEarthObjects] = useState<NearEarthObject[]>([]);
     const [filter, setFilter] = useState<Option | null>(null);
     const [loading, setLoading] = useState(false);
@@ -41,7 +47,7 @@ const NearEarthObjectsContainer: React.FC<Props> = ({ render }) => {
 
     return (
         <>
-            <Select value={filter} options={filterOptions} onChange={setFilter} isClearable placeholder="Filter by orbiting body" />
+            {renderFilter && renderFilter({ filter, filterOptions, setFilter })}
             {render({ nearEarthObjects: filteredObjects, loading, error })}
         </>
     );

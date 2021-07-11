@@ -1,4 +1,5 @@
 import React from 'react';
+import Select from 'react-select';
 import BarChart from '../components/BarChart';
 import NearEarthObjectsContainer from '../containers/NearEarthObjects';
 import { BarChartOptions } from '../types/BarChart';
@@ -37,17 +38,22 @@ const options: BarChartOptions = {
 
 const NEOChart = () => {
     return (
-        <NearEarthObjectsContainer
-            render={({ nearEarthObjects, loading, error }) => {
-                if (loading) {
-                    return <p>loading data...</p>
-                }
-                if (error) {
-                    return <p>Error: {error.message}</p>
-                }
-                return <BarChart data={mapNearEarthObjectsToBarChartData(nearEarthObjects)} options={options} />
-            }}
-        />
+        <>
+			<NearEarthObjectsContainer
+				renderFilter={({ filter, setFilter, filterOptions }) => (
+					<Select value={filter} options={filterOptions} onChange={setFilter} isClearable placeholder="Filter by orbiting" />
+				)}
+				render={({ nearEarthObjects, loading, error }) => {
+					if (loading) {
+						return <p>loading data...</p>
+					}
+					if (error) {
+						return <p>Error: {error.message}</p>
+					}
+					return <BarChart data={mapNearEarthObjectsToBarChartData(nearEarthObjects)} options={options} />
+				}}
+			/>
+		</>
     );
 };
 
