@@ -16,3 +16,15 @@ export const getFilterOptions = (neos: NearEarthObject[]): Option[] => neos
     .reduce<string[]>((flattenedFilters, neo) => flattenedFilters.concat(neo.close_approach_data.map(item => item.orbiting_body)), []) // flatten
     .reduce<string[]>((deduppedFilters, filterCandidate) => deduppedFilters.includes(filterCandidate) ? deduppedFilters : deduppedFilters.concat(filterCandidate), []) // dedupe
     .map(filter => ({ label: filter, value: filter })) // format
+
+export const mapCsvDataToNEOs = (data: string[][]): NearEarthObject[] => data.slice(1).map((objectData: any, index: number) => ({
+    id: index.toString(),
+    name: objectData[0],
+    estimated_diameter: {
+        kilometers: {
+            estimated_diameter_min: parseInt(objectData[1], 10),
+            estimated_diameter_max: parseInt(objectData[2], 10),
+        }
+    },
+    close_approach_data: [],
+}));

@@ -6,7 +6,6 @@ import NearEarthObjectsContainer from '../containers/NearEarthObjects';
 import { BarChartOptions, TableChartOptions } from '../types/Chart';
 import { Option } from '../types/Select';
 import { mapNearEarthObjectsToBarChartData } from './utils';
-
 const barOptions: BarChartOptions = {
     title: 'NEOs travelling around the Earth',
     hAxis: {
@@ -56,6 +55,7 @@ const NEOChart = () => {
 		<>
 			<Select value={displayMode} onChange={setDisplayMode} options={displayModes} placeholder="Select display mode" />
 			<NearEarthObjectsContainer
+				renderCsvReader={({ onRead }) => <input type="file" onChange={onRead} placeholder="read csv" accept=".csv" />}
 				renderFilter={({ filter, setFilter, filterOptions }) => (
 					<Select value={filter} options={filterOptions} onChange={setFilter} isClearable placeholder="Filter by orbiting" />
 				)}
